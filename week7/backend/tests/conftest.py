@@ -3,24 +3,25 @@ import tempfile
 from collections.abc import Generator
 
 import pytest
-from backend.app.db import get_db
-from backend.app.main import app
-from backend.app.models import Base
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
+from backend.app.db import get_db
+from backend.app.main import app
+from backend.app.models import Base
+
 
 @pytest.fixture()
 def client() -> Generator[TestClient, None, None]:
-    db_fd, db_path = tempfile.mkstemp()
+    db_fd, db_path = tempfile.mkstemp(suffix=".db")
     os.close(db_fd)
 
     engine = create_engine(f"sqlite:///{db_path}", connect_args={"check_same_thread": False})
     TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
     Base.metadata.create_all(bind=engine)
 
-    def override_get_db():
+    def override_get_db() -> Generator:
         session = TestingSessionLocal()
         try:
             yield session
@@ -36,6 +37,10 @@ def client() -> Generator[TestClient, None, None]:
     with TestClient(app) as c:
         yield c
 
-    os.unlink(db_path)
+    # Dispose engine to release file handles (required on Windows)
+    engine.dispose()
 
-
+    try:
+        os.unlink(db_path)
+    except OSError:
+        pass

@@ -9,7 +9,7 @@ from .models import Base
 from .routers import action_items as action_items_router
 from .routers import notes as notes_router
 
-app = FastAPI(title="Modern Software Dev Starter (Week 6)", version="0.1.0")
+app = FastAPI(title="Modern Software Dev Starter (Week 7)", version="0.2.0")
 
 # Ensure data dir exists
 Path("data").mkdir(parents=True, exist_ok=True)
@@ -33,5 +33,3 @@ async def root() -> FileResponse:
 # Routers
 app.include_router(notes_router.router)
 app.include_router(action_items_router.router)
-
-
