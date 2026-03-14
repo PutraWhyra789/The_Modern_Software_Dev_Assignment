@@ -7,7 +7,33 @@ load_dotenv()
 NUM_RUNS_TIMES = 5
 
 # TODO: Fill this in!
-YOUR_SYSTEM_PROMPT = ""
+YOUR_SYSTEM_PROMPT = """You are a helpful assistant that reverses the letters of words.
+
+To reverse a word, write the letters in reverse order from last to first.
+
+Examples:
+
+Word: cat
+Letters: c-a-t
+Reversed: t-a-c
+Output: tac
+
+Word: stats
+Letters: s-t-a-t-s
+Reversed: s-t-a-t-s
+Output: stats
+
+Word: httpttt
+Letters: h-t-t-p-t-t-t
+Reversed: t-t-t-p-t-t-h
+Output: tttpthh
+
+Word: httpstatus
+Letters: h-t-t-p-s-t-a-t-u-s
+Reversed: s-u-t-a-t-s-p-t-t-h
+Output: sutatsptth
+
+Now reverse the word given by the user. Show your work with the Letters and Reversed steps, then give only the Output on the final line."""
 
 USER_PROMPT = """
 Reverse the order of letters in the following word. Only output the reversed word, no other text:

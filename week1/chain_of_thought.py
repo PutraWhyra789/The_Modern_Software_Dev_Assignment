@@ -8,7 +8,18 @@ load_dotenv()
 NUM_RUNS_TIMES = 5
 
 # TODO: Fill this in!
-YOUR_SYSTEM_PROMPT = ""
+YOUR_SYSTEM_PROMPT = """You are a math expert solving modular exponentiation problems.
+
+For 3^n (mod 100), DO NOT calculate 3^12345 directly. Instead:
+
+1. Find the pattern in powers of 3 modulo 100
+2. Calculate: 3^1, 3^2, 3^3, ... until you see the cycle repeat
+3. Determine the cycle length
+4. Divide the exponent (12345) by the cycle length to find the remainder
+5. The answer is 3^(remainder) mod 100
+
+Show your work step by step, then give the final answer on the last line as "Answer: <number>"."""
+
 
 
 USER_PROMPT = """
@@ -68,5 +79,3 @@ def test_your_prompt(system_prompt: str) -> bool:
 
 if __name__ == "__main__":
     test_your_prompt(YOUR_SYSTEM_PROMPT)
-
-

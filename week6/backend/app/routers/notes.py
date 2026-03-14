@@ -8,6 +8,9 @@ from ..db import get_db
 from ..models import Note
 from ..schemas import NoteCreate, NotePatch, NoteRead
 
+from sqlalchemy import or_
+from backend.app.models import Note
+
 router = APIRouter(prefix="/notes", tags=["notes"])
 
 
@@ -68,14 +71,17 @@ def get_note(note_id: int, db: Session = Depends(get_db)) -> NoteRead:
 
 @router.get("/unsafe-search", response_model=list[NoteRead])
 def unsafe_search(q: str, db: Session = Depends(get_db)) -> list[NoteRead]:
-    sql = text(
-        f"""
-        SELECT id, title, content, created_at, updated_at
-        FROM notes
-        WHERE title LIKE '%{q}%' OR content LIKE '%{q}%'
-        ORDER BY created_at DESC
-        LIMIT 50
-        """
+    results = (
+        db.query(Note)
+        .filter(
+            or_(
+                Note.title.ilike(f"%{q}%"),
+                Note.content.ilike(f"%{q}%"),
+            )
+        )
+        .order_by(Note.created_at.desc())
+        .limit(50)
+        .all()
     )
     rows = db.execute(sql).all()
     results: list[NoteRead] = []
@@ -96,7 +102,7 @@ def unsafe_search(q: str, db: Session = Depends(get_db)) -> list[NoteRead]:
 def debug_hash_md5(q: str) -> dict[str, str]:
     import hashlib
 
-    return {"algo": "md5", "hex": hashlib.md5(q.encode()).hexdigest()}
+    return {"algo": "sha256", "hex": hashlib.sha256(q.encode()).hexdigest()}
 
 
 @router.get("/debug/eval")
@@ -107,9 +113,8 @@ def debug_eval(expr: str) -> dict[str, str]:
 
 @router.get("/debug/run")
 def debug_run(cmd: str) -> dict[str, str]:
-    import subprocess
-
-    completed = subprocess.run(cmd, shell=True, capture_output=True, text=True)  # noqa: S602,S603
+    import shlex
+    completed = subprocess.run(shlex.split(cmd), shell=False, capture_output=True, text=True)  # noqa: S602,S603
     return {"returncode": str(completed.returncode), "stdout": completed.stdout, "stderr": completed.stderr}
 
 
@@ -129,4 +134,3 @@ def debug_read(path: str) -> dict[str, str]:
     except Exception as exc:  # noqa: BLE001
         raise HTTPException(status_code=400, detail=str(exc))
     return {"snippet": content}
-

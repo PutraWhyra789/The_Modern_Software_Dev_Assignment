@@ -9,7 +9,18 @@ load_dotenv()
 NUM_RUNS_TIMES = 5
 
 # TODO: Fill this in! Try to get as close to 100% correctness across all runs as possible.
-YOUR_SYSTEM_PROMPT = ""
+YOUR_SYSTEM_PROMPT = """You are solving math word problems. Think step by step.
+
+Example:
+Problem: A 100-mile trip with stops at 30 miles and 20 miles from the end.
+- Total: 100 miles
+- First stop: 30 miles (position 30)
+- Second stop: 100 - 20 = 80 miles (position 80)
+- Distance between: 80 - 30 = 50 miles
+Answer: 50
+
+Now solve the user's problem the same way. Show your steps and give the final answer as "Answer: <number>"."""
+
 
 USER_PROMPT = """
 Solve this problem, then give the final answer on the last line as "Answer: <number>".
@@ -82,5 +93,3 @@ def test_your_prompt(system_prompt: str) -> bool:
 
 if __name__ == "__main__":
     test_your_prompt(YOUR_SYSTEM_PROMPT)
-
-
