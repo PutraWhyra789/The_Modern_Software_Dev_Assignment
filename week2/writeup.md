@@ -9,7 +9,7 @@ Fill out all of the `TODO`s in this file.
 
 ## SUBMISSION DETAILS
 
-Name: **TODO** \
+Name: Putra Whyra Pratama S. \
 SUNet ID: **TODO** \
 Citations: **TODO**
 
@@ -80,4 +80,4 @@ TODO: List all modified code files with the relevant line numbers.
 ## SUBMISSION INSTRUCTIONS
 1. Hit a `Command (⌘) + F` (or `Ctrl + F`) to find any remaining `TODO`s in this file. If no results are found, congratulations – you've completed all required fields. 
 2. Make sure you have all changes pushed to your remote repository for grading.
-3. Submit via Gradescope. 
+3. Submit via Gradescope.

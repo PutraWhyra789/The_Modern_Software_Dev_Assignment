@@ -36,4 +36,13 @@ def client() -> Generator[TestClient, None, None]:
     with TestClient(app) as c:
         yield c
 
-    os.unlink(db_path)
+    # Dispose the engine (closes all pooled connections) before removing the
+    # temp file. Without this, Windows raises PermissionError (WinError 32)
+    # because the SQLite file is still held open by the connection pool.
+    app.dependency_overrides.clear()
+    engine.dispose()
+
+    try:
+        os.unlink(db_path)
+    except PermissionError:
+        pass  # best-effort cleanup; Windows may still hold the file briefly
